@@ -22,7 +22,7 @@
 - `/regex` 경로에 Regex 테스트 툴 컴포넌트 마운트.
 
 ### 3.2 Regex 분석기 (Tree View)
-- 정규표현식을 파싱하여 AST(Abstract Syntax Tree) 형태로 변환해주는 라이브러리(예: `ret`, `regexp-tree` 등)를 검토 및 도입.
+- 정규표현식을 파싱하여 AST(Abstract Syntax Tree) 형태로 변환해주는 라이브러리로 `regexp-tree`를 채택하여 도입.
 - 파싱된 트리를 재귀적으로 순회하며, 각 토큰(문자, 수량자, 그룹 등)에 대한 설명을 렌더링.
 
 ### 3.3 샘플 데이터 하이라이팅
