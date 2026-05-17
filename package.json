@@ -12,13 +12,16 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
+    "@iarna/toml": "^2.2.5",
     "@mui/icons-material": "^9.0.1",
     "@mui/material": "^9.0.1",
     "dayjs": "^1.11.20",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "react-router-dom": "^7.15.1",
-    "regexp-tree": "^0.1.27"
+    "regexp-tree": "^0.1.27",
+    "xml-js": "^1.6.11",
+    "yaml": "^2.9.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
