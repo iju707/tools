@@ -13,10 +13,30 @@ export default function ImageEncoderTool() {
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [imageMeta, setImageMeta] = useState<{name: string, size: number, type: string} | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [base64Input, setBase64Input] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleCopy = (text: string) => {
     if (text) navigator.clipboard.writeText(text);
+  };
+
+  const handleBase64Input = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setBase64Input(val);
+    if (!val.trim()) return;
+
+    let src = val.trim();
+    if (!src.startsWith('data:image/')) {
+      // Assume raw base64 and default to png
+      src = `data:image/png;base64,${src}`;
+    }
+
+    setImageSrc(src);
+    setImageMeta({
+      name: 'pasted_image',
+      size: Math.round(src.length * 0.75), // approximate byte size
+      type: src.split(';')[0].replace('data:', '') || 'image/png'
+    });
   };
 
   // Image Drag & Drop Handlers
@@ -44,6 +64,7 @@ export default function ImageEncoderTool() {
           size: file.size,
           type: file.type
         });
+        setBase64Input(''); // clear the paste box
       }
     };
     reader.readAsDataURL(file);
@@ -63,6 +84,12 @@ export default function ImageEncoderTool() {
     }
   };
 
+  const handleClear = () => {
+    setImageSrc(null);
+    setImageMeta(null);
+    setBase64Input('');
+  };
+
   return (
     <Box sx={{ p: { xs: 2, md: 3 }, height: '100%', display: 'flex', flexDirection: 'column', maxWidth: 1600, mx: 'auto' }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
@@ -74,40 +101,56 @@ export default function ImageEncoderTool() {
       <Card variant="outlined" sx={{ flex: 1, display: 'flex', flexDirection: 'column', bgcolor: 'white' }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1, p: 2, minHeight: 0 }}>
           {!imageSrc ? (
-            <Box 
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onDrop={handleDrop}
-              onClick={() => fileInputRef.current?.click()}
-              sx={{
-                flex: 1,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                border: '2px dashed',
-                borderColor: isDragging ? 'primary.main' : 'grey.300',
-                bgcolor: isDragging ? 'primary.50' : 'grey.50',
-                borderRadius: 2,
-                cursor: 'pointer',
-                transition: 'all 0.2s ease',
-                '&:hover': {
-                  borderColor: 'primary.main',
-                  bgcolor: 'primary.50'
-                }
-              }}
-            >
-              <CloudUploadIcon sx={{ fontSize: 60, color: 'text.secondary', mb: 2 }} />
-              <Typography variant="h6" color="text.secondary">Drag & Drop an image here</Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>or click to browse files</Typography>
-              <Button variant="contained" disableElevation>Select Image</Button>
-              <input 
-                type="file" 
-                accept="image/*" 
-                ref={fileInputRef} 
-                onChange={handleFileChange} 
-                style={{ display: 'none' }} 
-              />
+            <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1, gap: 2 }}>
+              <Box 
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                onClick={() => fileInputRef.current?.click()}
+                sx={{
+                  flex: 1,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  border: '2px dashed',
+                  borderColor: isDragging ? 'primary.main' : 'grey.300',
+                  bgcolor: isDragging ? 'primary.50' : 'grey.50',
+                  borderRadius: 2,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  '&:hover': {
+                    borderColor: 'primary.main',
+                    bgcolor: 'primary.50'
+                  }
+                }}
+              >
+                <CloudUploadIcon sx={{ fontSize: 60, color: 'text.secondary', mb: 2 }} />
+                <Typography variant="h6" color="text.secondary">Drag & Drop an image here</Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>or click to browse files</Typography>
+                <Button variant="contained" disableElevation>Select Image</Button>
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  ref={fileInputRef} 
+                  onChange={handleFileChange} 
+                  style={{ display: 'none' }} 
+                />
+              </Box>
+              <Box>
+                <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600 }}>Or Paste Base64 String</Typography>
+                <TextField
+                  fullWidth
+                  multiline
+                  rows={4}
+                  value={base64Input}
+                  onChange={handleBase64Input}
+                  placeholder="Paste Data URI or raw Base64 string here..."
+                  slotProps={{
+                    input: { sx: { fontFamily: 'monospace', fontSize: '0.875rem' } }
+                  }}
+                />
+              </Box>
             </Box>
           ) : (
             <Box sx={{ display: 'flex', flex: 1, flexDirection: { xs: 'column', md: 'row' }, gap: 3, minHeight: 0 }}>
@@ -119,7 +162,7 @@ export default function ImageEncoderTool() {
                     startIcon={<DeleteIcon />} 
                     color="error" 
                     size="small"
-                    onClick={() => { setImageSrc(null); setImageMeta(null); }}
+                    onClick={handleClear}
                   >
                     Clear
                   </Button>
