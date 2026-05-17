@@ -15,8 +15,7 @@ const WORLD_CLOCKS = [
   { label: 'Local', tz: dayjs.tz.guess() },
   { label: 'UTC', tz: 'UTC' },
   { label: 'KST (Seoul)', tz: 'Asia/Seoul' },
-  { label: 'PST (Pacific)', tz: 'America/Los_Angeles' },
-  { label: 'EST (Eastern)', tz: 'America/New_York' },
+  { label: 'New York', tz: 'America/New_York' },
 ];
 
 const FORMAT_TOKENS = [
@@ -79,23 +78,25 @@ export default function TimeDateTool() {
   };
 
   return (
-    <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1200, mx: 'auto' }}>
-      <Typography variant="h5" sx={{ mb: 3, fontWeight: 'bold' }}>
+    <Box sx={{ p: { xs: 2, md: 3 }, height: '100%', display: 'flex', flexDirection: 'column', maxWidth: 1400, mx: 'auto' }}>
+      <Typography variant="h5" sx={{ mb: 2, fontWeight: 'bold' }}>
         Time & Date
       </Typography>
 
       {/* World Clocks */}
-      <Box sx={{ mb: 4 }}>
-        <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 'bold', color: 'text.secondary' }}>
-          Real-time World Clocks
-        </Typography>
+      <Box sx={{ mb: 3 }}>
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
           {WORLD_CLOCKS.map((clock) => (
             <Card variant="outlined" sx={{ bgcolor: 'white', flex: '1 1 180px' }} key={clock.label}>
               <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
-                <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.5 }}>
-                  {clock.label}
-                </Typography>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 0.5 }}>
+                  <Typography variant="caption" color="text.secondary">
+                    {clock.label}
+                  </Typography>
+                  <Typography variant="caption" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
+                    {clock.tz === 'UTC' ? 'UTC' : `UTC ${now.tz(clock.tz).format('Z')}`}
+                  </Typography>
+                </Box>
                 <Typography variant="h6" sx={{ fontWeight: 'mono', lineHeight: 1 }}>
                   {now.tz(clock.tz).format('HH:mm:ss')}
                 </Typography>
@@ -108,10 +109,10 @@ export default function TimeDateTool() {
         </Box>
       </Box>
 
-      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 4 }}>
+      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 3, flex: 1, minHeight: 0 }}>
         {/* Converter Panel */}
-        <Box>
-          <Card variant="outlined" sx={{ bgcolor: 'white', height: '100%' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+          <Card variant="outlined" sx={{ bgcolor: 'white', flex: 1, overflow: 'auto' }}>
             <CardContent>
               <Typography variant="h6" sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
                 Two-way Converter
@@ -185,8 +186,8 @@ export default function TimeDateTool() {
         </Box>
 
         {/* Format Builder Panel */}
-        <Box>
-          <Card variant="outlined" sx={{ bgcolor: 'white', height: '100%' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+          <Card variant="outlined" sx={{ bgcolor: 'white', flex: 1, overflow: 'auto' }}>
             <CardContent>
               <Typography variant="h6" sx={{ mb: 2 }}>
                 Date Format Builder
