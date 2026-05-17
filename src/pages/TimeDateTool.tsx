@@ -88,37 +88,53 @@ const convertFormatToDayjs = (formatStr: string, lang: string): string => {
   if (lang === 'js') return formatStr;
   
   if (lang === 'python') {
-    let converted = formatStr;
-    converted = converted.replace(/%Y/g, 'YYYY');
-    converted = converted.replace(/%y/g, 'YY');
-    converted = converted.replace(/%m/g, 'MM');
-    converted = converted.replace(/%B/g, 'MMMM');
-    converted = converted.replace(/%b/g, 'MMM');
-    converted = converted.replace(/%h/g, 'MMM');
-    converted = converted.replace(/%d/g, 'DD');
-    converted = converted.replace(/%A/g, 'dddd');
-    converted = converted.replace(/%a/g, 'ddd');
-    converted = converted.replace(/%H/g, 'HH');
-    converted = converted.replace(/%I/g, 'hh');
-    converted = converted.replace(/%M/g, 'mm');
-    converted = converted.replace(/%S/g, 'ss');
-    converted = converted.replace(/%f/g, 'SSS');
-    converted = converted.replace(/%p/g, 'A');
-    converted = converted.replace(/%z/g, 'Z');
-    return converted;
+    const tokenMap: Record<string, string> = {
+      '%Y': 'YYYY', '%y': 'YY', '%m': 'MM', '%B': 'MMMM', '%b': 'MMM', '%h': 'MMM',
+      '%d': 'DD', '%A': 'dddd', '%a': 'ddd', '%H': 'HH', '%I': 'hh', '%M': 'mm',
+      '%S': 'ss', '%f': 'SSS', '%p': 'A', '%z': 'Z', '%%': '[%]'
+    };
+    
+    let result = '';
+    const regex = /(%[a-zA-Z%])|([^%]+)|(%)/g;
+    let match;
+    while ((match = regex.exec(formatStr)) !== null) {
+      if (match[1]) {
+        if (tokenMap[match[1]]) {
+          result += tokenMap[match[1]];
+        } else {
+          result += '[' + match[1] + ']';
+        }
+      } else if (match[2]) {
+        result += match[2].replace(/([A-Za-z]+)/g, '[$1]');
+      } else if (match[3]) {
+        result += '[%]';
+      }
+    }
+    return result;
   }
   
   if (lang === 'java') {
-    let converted = formatStr;
-    converted = converted.replace(/yyyy/g, 'YYYY');
-    converted = converted.replace(/yy/g, 'YY');
-    // MM, MMM, MMMM are identical in Java and dayjs
-    converted = converted.replace(/dd/g, 'DD');
-    converted = converted.replace(/EEEE/g, 'dddd');
-    converted = converted.replace(/EEE/g, 'ddd');
-    // HH, hh, mm, ss, SSS, Z are identical
-    converted = converted.replace(/a/g, 'A');
-    return converted;
+    const tokenMap: Record<string, string> = {
+      'yyyy': 'YYYY', 'yy': 'YY', 'MMMM': 'MMMM', 'MMM': 'MMM', 'MM': 'MM',
+      'dd': 'DD', 'EEEE': 'dddd', 'EEE': 'ddd', 'HH': 'HH', 'hh': 'hh',
+      'mm': 'mm', 'ss': 'ss', 'SSS': 'SSS', 'a': 'A', 'Z': 'Z'
+    };
+    const keys = Object.keys(tokenMap).sort((a, b) => b.length - a.length);
+    const regexStr = '(' + keys.join('|') + ')|([A-Za-z]+)|([^A-Za-z]+)';
+    const regex = new RegExp(regexStr, 'g');
+    
+    let result = '';
+    let match;
+    while ((match = regex.exec(formatStr)) !== null) {
+      if (match[1]) {
+        result += tokenMap[match[1]];
+      } else if (match[2]) {
+        result += '[' + match[2] + ']';
+      } else if (match[3]) {
+        result += match[3];
+      }
+    }
+    return result;
   }
   
   return formatStr;
