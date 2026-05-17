@@ -1,14 +1,11 @@
 import { useState } from 'react'
-import { Routes, Route, Link, useLocation } from 'react-router-dom'
-import Dashboard from './pages/Dashboard'
+import { Routes, Route, Link, useLocation, Navigate } from 'react-router-dom'
 import RegexTool from './pages/RegexTool'
 
 import { Box, AppBar, Toolbar, IconButton, Typography, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, CssBaseline } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
 import GitHubIcon from '@mui/icons-material/GitHub'
-import DashboardIcon from '@mui/icons-material/Dashboard'
 import CodeIcon from '@mui/icons-material/Code'
-import SettingsIcon from '@mui/icons-material/Settings'
 
 const DRAWER_WIDTH = 256;
 const COLLAPSED_WIDTH = 64;
@@ -18,9 +15,7 @@ function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
 
   const navItems = [
-    { name: 'Dashboard', path: '/', icon: <DashboardIcon /> },
     { name: 'Regex', path: '/regex', icon: <CodeIcon /> },
-    { name: 'Settings', path: '/settings', icon: <SettingsIcon /> },
   ]
 
   const toggleSidebar = () => {
@@ -53,9 +48,7 @@ function App() {
           </IconButton>
           
           <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1, fontWeight: 'bold' }}>
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
-              DevTools
-            </span>
+              OOFBIRD Dev Tools
           </Typography>
 
           <IconButton
@@ -151,9 +144,8 @@ function App() {
         {/* Dynamic Page Content */}
         <Box sx={{ flex: 1, overflow: 'auto', bgcolor: 'grey.50' }}>
           <Routes>
-            <Route path="/" element={<Dashboard />} />
+            <Route path="/" element={<Navigate to="/regex" replace />} />
             <Route path="/regex" element={<RegexTool />} />
-            <Route path="/settings" element={<Box sx={{ p: 3, color: 'text.secondary' }}>Settings coming soon...</Box>} />
           </Routes>
         </Box>
       </Box>
