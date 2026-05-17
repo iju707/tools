@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { 
   Box, Typography, Card, CardContent, TextField, 
-  Stack, Divider, Chip, Tooltip, IconButton, MenuItem, Select 
+  Stack, Divider, Chip, Tooltip, IconButton, MenuItem, Select,
+  ToggleButtonGroup, ToggleButton 
 } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import dayjs from 'dayjs';
@@ -18,11 +19,20 @@ const WORLD_CLOCKS = [
   { label: 'New York', tz: 'America/New_York' },
 ];
 
-const FORMAT_TOKENS = [
+type FormatToken = {
+  token: string;
+  desc: string;
+};
+
+const FORMAT_TOKENS_JS: FormatToken[] = [
   { token: 'YYYY', desc: '4-digit year (e.g., 2026)' },
   { token: 'YY', desc: '2-digit year (e.g., 26)' },
   { token: 'MM', desc: 'Month, 2-digits (01-12)' },
+  { token: 'MMM', desc: 'Month short (e.g., Jan)' },
+  { token: 'MMMM', desc: 'Month full (e.g., January)' },
   { token: 'DD', desc: 'Day of month, 2-digits (01-31)' },
+  { token: 'ddd', desc: 'Day of week short (e.g., Sun)' },
+  { token: 'dddd', desc: 'Day of week full (e.g., Sunday)' },
   { token: 'HH', desc: 'Hour, 24-hour format (00-23)' },
   { token: 'hh', desc: 'Hour, 12-hour format (01-12)' },
   { token: 'mm', desc: 'Minute (00-59)' },
@@ -31,6 +41,88 @@ const FORMAT_TOKENS = [
   { token: 'A', desc: 'AM/PM' },
   { token: 'Z', desc: 'Offset from UTC (e.g., +09:00)' },
 ];
+
+const FORMAT_TOKENS_PYTHON: FormatToken[] = [
+  { token: '%Y', desc: '4-digit year (e.g., 2026)' },
+  { token: '%y', desc: '2-digit year (e.g., 26)' },
+  { token: '%m', desc: 'Month, 2-digits (01-12)' },
+  { token: '%b', desc: 'Month short (e.g., Jan)' },
+  { token: '%B', desc: 'Month full (e.g., January)' },
+  { token: '%d', desc: 'Day of month, 2-digits (01-31)' },
+  { token: '%a', desc: 'Day of week short (e.g., Sun)' },
+  { token: '%A', desc: 'Day of week full (e.g., Sunday)' },
+  { token: '%H', desc: 'Hour, 24-hour format (00-23)' },
+  { token: '%I', desc: 'Hour, 12-hour format (01-12)' },
+  { token: '%M', desc: 'Minute (00-59)' },
+  { token: '%S', desc: 'Second (00-59)' },
+  { token: '%f', desc: 'Microsecond (mapped to Millisecond)' },
+  { token: '%p', desc: 'AM/PM' },
+  { token: '%z', desc: 'Offset from UTC (e.g., +0900)' },
+];
+
+const FORMAT_TOKENS_JAVA: FormatToken[] = [
+  { token: 'yyyy', desc: '4-digit year (e.g., 2026)' },
+  { token: 'yy', desc: '2-digit year (e.g., 26)' },
+  { token: 'MM', desc: 'Month, 2-digits (01-12)' },
+  { token: 'MMM', desc: 'Month short (e.g., Jan)' },
+  { token: 'MMMM', desc: 'Month full (e.g., January)' },
+  { token: 'dd', desc: 'Day of month, 2-digits (01-31)' },
+  { token: 'EEE', desc: 'Day of week short (e.g., Sun)' },
+  { token: 'EEEE', desc: 'Day of week full (e.g., Sunday)' },
+  { token: 'HH', desc: 'Hour, 24-hour format (00-23)' },
+  { token: 'hh', desc: 'Hour, 12-hour format (01-12)' },
+  { token: 'mm', desc: 'Minute (00-59)' },
+  { token: 'ss', desc: 'Second (00-59)' },
+  { token: 'SSS', desc: 'Millisecond (000-999)' },
+  { token: 'a', desc: 'AM/PM' },
+  { token: 'Z', desc: 'Offset from UTC (e.g., +0900)' },
+];
+
+const getFormatTokens = (lang: string) => {
+  if (lang === 'python') return FORMAT_TOKENS_PYTHON;
+  if (lang === 'java') return FORMAT_TOKENS_JAVA;
+  return FORMAT_TOKENS_JS;
+};
+
+const convertFormatToDayjs = (formatStr: string, lang: string): string => {
+  if (lang === 'js') return formatStr;
+  
+  if (lang === 'python') {
+    let converted = formatStr;
+    converted = converted.replace(/%Y/g, 'YYYY');
+    converted = converted.replace(/%y/g, 'YY');
+    converted = converted.replace(/%m/g, 'MM');
+    converted = converted.replace(/%B/g, 'MMMM');
+    converted = converted.replace(/%b/g, 'MMM');
+    converted = converted.replace(/%h/g, 'MMM');
+    converted = converted.replace(/%d/g, 'DD');
+    converted = converted.replace(/%A/g, 'dddd');
+    converted = converted.replace(/%a/g, 'ddd');
+    converted = converted.replace(/%H/g, 'HH');
+    converted = converted.replace(/%I/g, 'hh');
+    converted = converted.replace(/%M/g, 'mm');
+    converted = converted.replace(/%S/g, 'ss');
+    converted = converted.replace(/%f/g, 'SSS');
+    converted = converted.replace(/%p/g, 'A');
+    converted = converted.replace(/%z/g, 'Z');
+    return converted;
+  }
+  
+  if (lang === 'java') {
+    let converted = formatStr;
+    converted = converted.replace(/yyyy/g, 'YYYY');
+    converted = converted.replace(/yy/g, 'YY');
+    // MM, MMM, MMMM are identical in Java and dayjs
+    converted = converted.replace(/dd/g, 'DD');
+    converted = converted.replace(/EEEE/g, 'dddd');
+    converted = converted.replace(/EEE/g, 'ddd');
+    // HH, hh, mm, ss, SSS, Z are identical
+    converted = converted.replace(/a/g, 'A');
+    return converted;
+  }
+  
+  return formatStr;
+};
 
 export default function TimeDateTool() {
   const [now, setNow] = useState(dayjs());
@@ -41,7 +133,8 @@ export default function TimeDateTool() {
   const [dateStr, setDateStr] = useState<string>(now.format('YYYY-MM-DDTHH:mm:ss'));
   
   // Format Builder State
-  const [formatStr, setFormatStr] = useState<string>('YYYY-MM-DD HH:mm:ss.SSS Z');
+  const [formatLanguage, setFormatLanguage] = useState<'js' | 'python' | 'java'>('js');
+  const [formatStr, setFormatStr] = useState<string>('YYYY-MM-DD HH:mm:ss');
 
   // Ticking Clock
   useEffect(() => {
@@ -189,9 +282,28 @@ export default function TimeDateTool() {
         <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: 0 }}>
           <Card variant="outlined" sx={{ bgcolor: 'white', flex: 1, overflow: 'auto' }}>
             <CardContent>
-              <Typography variant="h6" sx={{ mb: 2 }}>
-                Date Format Builder
-              </Typography>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                <Typography variant="h6">
+                  Date Format Builder
+                </Typography>
+                <ToggleButtonGroup
+                  value={formatLanguage}
+                  exclusive
+                  onChange={(_, newValue) => {
+                    if (newValue) {
+                      setFormatLanguage(newValue);
+                      if (newValue === 'python') setFormatStr('%Y-%m-%d %H:%M:%S');
+                      else if (newValue === 'java') setFormatStr('yyyy-MM-dd HH:mm:ss');
+                      else setFormatStr('YYYY-MM-DD HH:mm:ss');
+                    }
+                  }}
+                  size="small"
+                >
+                  <ToggleButton value="js" sx={{ px: 2, py: 0.5 }}>JS (dayjs)</ToggleButton>
+                  <ToggleButton value="python" sx={{ px: 2, py: 0.5 }}>Python</ToggleButton>
+                  <ToggleButton value="java" sx={{ px: 2, py: 0.5 }}>Java/C#</ToggleButton>
+                </ToggleButtonGroup>
+              </Box>
               
               <Stack spacing={3}>
                 <Box>
@@ -212,11 +324,11 @@ export default function TimeDateTool() {
                     Live Preview (Current Time)
                   </Typography>
                   <Typography variant="h5" sx={{ fontFamily: 'monospace', color: 'primary.dark' }}>
-                    {now.format(formatStr) || 'Invalid Format'}
+                    {now.format(convertFormatToDayjs(formatStr, formatLanguage)) || 'Invalid Format'}
                   </Typography>
                   <IconButton 
                     size="small" 
-                    onClick={() => handleCopy(now.format(formatStr))} 
+                    onClick={() => handleCopy(now.format(convertFormatToDayjs(formatStr, formatLanguage)))} 
                     sx={{ mt: 1 }}
                     title="Copy to clipboard"
                   >
@@ -231,7 +343,7 @@ export default function TimeDateTool() {
                     Available Tokens (Hover for description)
                   </Typography>
                   <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                    {FORMAT_TOKENS.map((item) => (
+                    {getFormatTokens(formatLanguage).map((item) => (
                       <Tooltip key={item.token} title={item.desc} arrow placement="top">
                         <Chip 
                           label={item.token} 
