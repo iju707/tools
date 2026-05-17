@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import { Routes, Route, Link, useLocation, Navigate } from 'react-router-dom'
 import RegexTool from './pages/RegexTool'
+import TimeDateTool from './pages/TimeDateTool'
 
 import { Box, AppBar, Toolbar, IconButton, Typography, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, CssBaseline } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
 import GitHubIcon from '@mui/icons-material/GitHub'
 import CodeIcon from '@mui/icons-material/Code'
+import AccessTimeIcon from '@mui/icons-material/AccessTime'
 
 const DRAWER_WIDTH = 256;
 const COLLAPSED_WIDTH = 64;
@@ -16,6 +18,7 @@ function App() {
 
   const navItems = [
     { name: 'Regex', path: '/regex', icon: <CodeIcon /> },
+    { name: 'Time & Date', path: '/time', icon: <AccessTimeIcon /> },
   ]
 
   const toggleSidebar = () => {
@@ -146,6 +149,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Navigate to="/regex" replace />} />
             <Route path="/regex" element={<RegexTool />} />
+            <Route path="/time" element={<TimeDateTool />} />
           </Routes>
         </Box>
       </Box>
