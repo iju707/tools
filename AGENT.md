@@ -7,7 +7,7 @@
 ## 🛠️ 기술 스택 (Tech Stack)
 - **Framework:** React 19 (via Vite)
 - **Language:** TypeScript
-- **Styling:** Tailwind CSS v4
+- **Styling:** Material UI (MUI) 중심, Tailwind CSS v4 (유틸리티 보조)
 - **Deployment:** GitHub Pages (via GitHub Actions)
 - **Domain:** tools.oofbird.me
 
