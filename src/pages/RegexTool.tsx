@@ -22,20 +22,31 @@ export default function RegexTool() {
     try {
       if (!pattern || parseResult.error) return { matches: [], error: null };
       const regex = new RegExp(pattern, flags);
-      const matches = [];
+      const matches: any[] = [];
       let match;
+
+      const extractGroups = (m: RegExpExecArray) => {
+        const groups = [];
+        for (let i = 1; i < m.length; i++) {
+          groups.push({ index: i, value: m[i] });
+        }
+        return { groups, namedGroups: m.groups || null };
+      };
+
       if (regex.global) {
         while ((match = regex.exec(sampleText)) !== null) {
           if (match[0].length === 0) {
             regex.lastIndex++; // Prevent infinite loop on zero-length matches
           } else {
-             matches.push({ start: match.index, end: match.index + match[0].length, text: match[0] });
+             const { groups, namedGroups } = extractGroups(match);
+             matches.push({ start: match.index, end: match.index + match[0].length, text: match[0], groups, namedGroups });
           }
         }
       } else {
         match = regex.exec(sampleText);
         if (match) {
-          matches.push({ start: match.index, end: match.index + match[0].length, text: match[0] });
+          const { groups, namedGroups } = extractGroups(match);
+          matches.push({ start: match.index, end: match.index + match[0].length, text: match[0], groups, namedGroups });
         }
       }
       return { matches, error: null };
@@ -237,11 +248,48 @@ export default function RegexTool() {
                </div>
                
                {/* Output Highlight Area */}
-               <div className="flex-1 p-5 bg-gray-50 font-mono text-base whitespace-pre-wrap overflow-auto text-gray-600 relative">
+               <div className="flex-1 p-5 bg-gray-50 font-mono text-base whitespace-pre-wrap overflow-auto text-gray-600 relative border-b border-gray-100">
                   <div className="absolute top-0 right-0 p-3">
                     <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest bg-white px-2 py-1 rounded shadow-sm border border-gray-100">Preview</span>
                   </div>
                   <div className="pt-2">{renderHighlight()}</div>
+               </div>
+               
+               {/* Match Details Area */}
+               <div className="flex-1 p-5 bg-white overflow-auto relative">
+                  <div className="absolute top-0 right-0 p-3">
+                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest bg-gray-50 px-2 py-1 rounded shadow-sm border border-gray-200">Match Details</span>
+                  </div>
+                  <div className="pt-2 space-y-4">
+                    {matchResult.matches.length === 0 ? (
+                      <div className="text-gray-400 text-sm italic">No matches found.</div>
+                    ) : (
+                      matchResult.matches.map((m: any, idx: number) => (
+                        <div key={idx} className="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+                          <div className="bg-blue-50/50 px-4 py-2 border-b border-gray-200 font-mono text-sm text-blue-900">
+                            <span className="font-bold mr-2">Match {idx + 1}:</span>
+                            <span className="bg-white px-1 py-0.5 rounded border border-blue-200">{m.text}</span>
+                          </div>
+                          {(m.groups.length > 0 || m.namedGroups) && (
+                            <div className="p-3 bg-white font-mono text-sm space-y-2">
+                              {m.groups.map((g: any) => (
+                                <div key={g.index} className="flex items-center gap-2">
+                                  <span className="text-xs font-bold bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded">Group {g.index}</span>
+                                  <span className="text-gray-800">{g.value !== undefined ? g.value : <span className="text-gray-400 italic">undefined</span>}</span>
+                                </div>
+                              ))}
+                              {m.namedGroups && Object.entries(m.namedGroups).map(([name, value], i) => (
+                                <div key={`named-${i}`} className="flex items-center gap-2">
+                                  <span className="text-xs font-bold bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded">Name: {name}</span>
+                                  <span className="text-gray-800">{value !== undefined ? String(value) : <span className="text-gray-400 italic">undefined</span>}</span>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      ))
+                    )}
+                  </div>
                </div>
              </div>
           </div>
