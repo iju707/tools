@@ -152,6 +152,41 @@ export default function ConverterTool() {
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLInputElement;
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const start = target.selectionStart || 0;
+      const end = target.selectionEnd || 0;
+      const value = target.value;
+
+      const currentLineStart = value.lastIndexOf('\n', start - 1) + 1;
+      const currentLine = value.slice(currentLineStart, start);
+      
+      const match = currentLine.match(/^\s*/);
+      const whitespace = match ? match[0] : '';
+
+      const newValue = value.slice(0, start) + '\n' + whitespace + value.slice(end);
+      setInputData(newValue);
+      
+      setTimeout(() => {
+        target.selectionStart = target.selectionEnd = start + 1 + whitespace.length;
+      }, 0);
+    } else if (e.key === 'Tab') {
+      e.preventDefault();
+      const start = target.selectionStart || 0;
+      const end = target.selectionEnd || 0;
+      const value = target.value;
+
+      const newValue = value.slice(0, start) + '  ' + value.slice(end);
+      setInputData(newValue);
+      
+      setTimeout(() => {
+        target.selectionStart = target.selectionEnd = start + 2;
+      }, 0);
+    }
+  };
+
   return (
     <Box sx={{ p: { xs: 2, md: 3 }, height: '100%', display: 'flex', flexDirection: 'column', maxWidth: 1600, mx: 'auto' }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
@@ -205,6 +240,7 @@ export default function ConverterTool() {
               fullWidth
               value={inputData}
               onChange={(e) => setInputData(e.target.value)}
+              onKeyDown={handleKeyDown}
               placeholder={`Paste your ${FORMATS.find(f => f.value === inputFormat)?.label} here...`}
               sx={{
                 height: '100%',
