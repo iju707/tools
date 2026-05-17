@@ -4,6 +4,7 @@ import RegexTool from './pages/RegexTool'
 import TimeDateTool from './pages/TimeDateTool'
 import ConverterTool from './pages/ConverterTool'
 import EncoderTool from './pages/EncoderTool'
+import ImageEncoderTool from './pages/ImageEncoderTool'
 
 import { Box, AppBar, Toolbar, IconButton, Typography, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, CssBaseline } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
@@ -12,6 +13,7 @@ import CodeIcon from '@mui/icons-material/Code'
 import AccessTimeIcon from '@mui/icons-material/AccessTime'
 import SyncAltIcon from '@mui/icons-material/SyncAlt'
 import SecurityIcon from '@mui/icons-material/Security'
+import ImageIcon from '@mui/icons-material/Image'
 
 const DRAWER_WIDTH = 256;
 const COLLAPSED_WIDTH = 64;
@@ -25,6 +27,7 @@ function App() {
     { name: 'Time & Date', path: '/time', icon: <AccessTimeIcon /> },
     { name: 'Converter', path: '/converter', icon: <SyncAltIcon /> },
     { name: 'Base64 & Hash', path: '/encoder', icon: <SecurityIcon /> },
+    { name: 'Image & Base64', path: '/image-base64', icon: <ImageIcon /> },
   ]
 
   const toggleSidebar = () => {
@@ -158,6 +161,7 @@ function App() {
             <Route path="/time" element={<TimeDateTool />} />
             <Route path="/converter" element={<ConverterTool />} />
             <Route path="/encoder" element={<EncoderTool />} />
+            <Route path="/image-base64" element={<ImageEncoderTool />} />
           </Routes>
         </Box>
       </Box>
