@@ -1,5 +1,12 @@
 import React, { useState, useMemo } from 'react';
 import regexpTree from 'regexp-tree';
+import { 
+  Box, Typography, Card, TextField, 
+  Chip
+} from '@mui/material';
+import WarningIcon from '@mui/icons-material/Warning';
+import AnalyticsIcon from '@mui/icons-material/Analytics';
+import TextFieldsIcon from '@mui/icons-material/TextFields';
 
 export default function RegexTool() {
   const [pattern, setPattern] = useState('[0-9]+');
@@ -69,7 +76,21 @@ export default function RegexTool() {
       }
       // Add highlighted text
       elements.push(
-        <span key={`match-${idx}`} className="bg-blue-200 text-blue-900 rounded px-0.5 border border-blue-300 font-medium shadow-sm">
+        <span 
+          key={`match-${idx}`} 
+          style={{
+            backgroundColor: '#dbeafe',
+            color: '#1e3a8a',
+            borderRadius: '4px',
+            paddingLeft: '4px',
+            paddingRight: '4px',
+            paddingTop: '2px',
+            paddingBottom: '2px',
+            border: '1px solid #bfdbfe',
+            fontWeight: 500,
+            boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
+          }}
+        >
           {sampleText.slice(m.start, m.end)}
         </span>
       );
@@ -86,216 +107,319 @@ export default function RegexTool() {
 
   const renderAstNode = (node: any, depth = 0): React.ReactNode => {
     if (!node) return null;
-    const padding = { paddingLeft: `${depth * 16}px` };
 
     if (node.type === 'RegExp') {
       return (
-        <div className="space-y-1">
-          <div className="font-semibold text-blue-700">RegExp</div>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+          <Typography variant="body2" sx={{ fontWeight: 'bold', color: 'primary.main', fontFamily: 'monospace' }}>RegExp</Typography>
           {node.body && renderAstNode(node.body, depth + 1)}
-        </div>
+        </Box>
       );
     }
 
     if (node.type === 'Char') {
-      return <div style={padding} className="text-gray-600 py-0.5">↳ Char: <span className="font-mono bg-gray-100 px-1 rounded border border-gray-200">{node.value}</span></div>;
+      return (
+        <Box sx={{ pl: depth * 2, display: 'flex', alignItems: 'center', py: 0.25, color: 'text.secondary' }}>
+          <Typography variant="body2" sx={{ fontFamily: 'monospace' }}>↳ Char: </Typography>
+          <Typography 
+            variant="body2" 
+            component="span" 
+            sx={{ 
+              fontFamily: 'monospace', 
+              bgcolor: 'grey.100', 
+              color: 'text.primary', 
+              px: 0.75, 
+              py: 0.1, 
+              borderRadius: 0.5, 
+              border: '1px solid', 
+              borderColor: 'grey.300', 
+              ml: 0.5, 
+              fontSize: '0.8125rem' 
+            }}
+          >
+            {node.value}
+          </Typography>
+        </Box>
+      );
     }
     
     if (node.type === 'Repetition') {
        return (
-         <div style={padding} className="text-purple-600 py-0.5">
-           <span className="font-semibold">↳ Repetition</span> <span className="text-xs bg-purple-100 text-purple-800 px-1.5 py-0.5 rounded ml-1">{node.quantifier.kind}</span>
+         <Box sx={{ pl: depth * 2, py: 0.25 }}>
+           <Typography variant="body2" component="span" sx={{ fontWeight: 'bold', color: 'secondary.main', fontFamily: 'monospace' }}>↳ Repetition</Typography>
+           <Chip 
+             label={node.quantifier.kind} 
+             size="small" 
+             sx={{ 
+               height: 18, 
+               fontSize: '0.6875rem', 
+               bgcolor: 'secondary.light', 
+               color: 'secondary.dark', 
+               ml: 1, 
+               fontWeight: 'bold',
+               py: 0
+             }} 
+           />
            {renderAstNode(node.expression, depth + 1)}
-         </div>
+         </Box>
        );
     }
 
     if (node.type === 'Alternative') {
        return (
-         <div style={padding} className="text-orange-600 py-0.5">
-           <span className="font-semibold">↳ Alternative</span>
+         <Box sx={{ pl: depth * 2, py: 0.25 }}>
+           <Typography variant="body2" sx={{ fontWeight: 'bold', color: 'warning.main', fontFamily: 'monospace' }}>↳ Alternative</Typography>
            {node.expressions.map((exp: any, i: number) => (
-             <div key={i}>{renderAstNode(exp, depth + 1)}</div>
+             <Box key={i}>{renderAstNode(exp, depth + 1)}</Box>
            ))}
-         </div>
+         </Box>
        );
     }
 
     if (node.type === 'CharClass') {
        return (
-         <div style={padding} className="text-teal-600 py-0.5">
-           <span className="font-semibold">↳ CharClass</span> {node.negative ? <span className="text-xs bg-red-100 text-red-800 px-1.5 py-0.5 rounded ml-1">Negative</span> : ''}
+         <Box sx={{ pl: depth * 2, py: 0.25 }}>
+           <Typography variant="body2" component="span" sx={{ fontWeight: 'bold', color: 'info.main', fontFamily: 'monospace' }}>↳ CharClass</Typography>
+           {node.negative && (
+             <Chip label="Negative" size="small" color="error" variant="outlined" sx={{ height: 18, fontSize: '0.6875rem', ml: 1, fontWeight: 'bold' }} />
+           )}
            {node.expressions.map((exp: any, i: number) => (
-             <div key={i}>{renderAstNode(exp, depth + 1)}</div>
+             <Box key={i}>{renderAstNode(exp, depth + 1)}</Box>
            ))}
-         </div>
+         </Box>
        );
     }
     
     if (node.type === 'Group') {
        return (
-         <div style={padding} className="text-indigo-600 py-0.5">
-           <span className="font-semibold">↳ Group</span> <span className="text-xs bg-indigo-100 text-indigo-800 px-1.5 py-0.5 rounded ml-1">{node.capturing ? 'Capturing' : 'Non-capturing'}</span>
+         <Box sx={{ pl: depth * 2, py: 0.25 }}>
+           <Typography variant="body2" component="span" sx={{ fontWeight: 'bold', color: '#4f46e5', fontFamily: 'monospace' }}>↳ Group</Typography>
+           <Chip 
+             label={node.capturing ? 'Capturing' : 'Non-capturing'} 
+             size="small" 
+             variant="outlined" 
+             color="primary" 
+             sx={{ height: 18, fontSize: '0.6875rem', ml: 1, fontWeight: 'bold' }} 
+           />
            {node.expression && renderAstNode(node.expression, depth + 1)}
-         </div>
+         </Box>
        );
     }
 
     if (node.type === 'ClassRange') {
        return (
-         <div style={padding} className="text-pink-600 py-0.5">
-           <span className="font-semibold">↳ Range</span> <span className="text-sm">({node.from.value} - {node.to.value})</span>
-         </div>
+         <Box sx={{ pl: depth * 2, py: 0.25, display: 'flex', alignItems: 'center', color: 'error.main' }}>
+           <Typography variant="body2" sx={{ fontWeight: 'bold', fontFamily: 'monospace' }}>↳ Range: </Typography>
+           <Typography variant="body2" sx={{ fontFamily: 'monospace', ml: 0.5, color: 'text.primary' }}>
+             ({node.from.value} - {node.to.value})
+           </Typography>
+         </Box>
        );
     }
 
     // Fallback for other nodes
-    return <div style={padding} className="text-gray-500 py-0.5">↳ {node.type}</div>;
+    return (
+      <Box sx={{ pl: depth * 2, py: 0.25 }}>
+        <Typography variant="body2" sx={{ color: 'text.secondary', fontFamily: 'monospace' }}>↳ {node.type}</Typography>
+      </Box>
+    );
   };
 
   return (
-    <div className="p-6 h-full flex flex-col gap-6">
+    <Box sx={{ p: { xs: 2, md: 3 }, height: '100%', display: 'flex', flexDirection: 'column', maxWidth: 1600, mx: 'auto' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+        <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+          Regex Tester
+        </Typography>
+      </Box>
+
       {/* Top Input Area */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 shrink-0 transition-shadow hover:shadow-md">
-        <label className="block text-sm font-bold text-gray-800 mb-3 uppercase tracking-wider">Regular Expression</label>
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="flex-1 flex items-center bg-gray-50 border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 transition-all">
-            <span className="px-4 text-gray-400 font-mono text-xl select-none">/</span>
-            <input 
-              type="text" 
+      <Card variant="outlined" sx={{ p: 2.5, mb: 2, bgcolor: 'white', shrink: 0 }}>
+        <Typography variant="subtitle2" sx={{ mb: 1.5, fontWeight: 600, color: 'text.secondary', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+          Regular Expression
+        </Typography>
+        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2, alignItems: 'center' }}>
+          <Box sx={{ 
+            flex: 1, 
+            display: 'flex', 
+            alignItems: 'center', 
+            bgcolor: 'grey.50', 
+            border: '1px solid', 
+            borderColor: 'divider', 
+            borderRadius: 2, 
+            px: 2,
+            width: '100%',
+            '&:focus-within': {
+              borderColor: 'primary.main',
+              boxShadow: '0 0 0 1px rgba(25, 118, 210, 0.5)',
+              bgcolor: 'white'
+            },
+            transition: 'all 0.2s'
+          }}>
+            <Typography variant="h5" color="text.secondary" sx={{ fontFamily: 'monospace', select: 'none', mr: 1, fontWeight: 'medium' }}>/</Typography>
+            <TextField
+              variant="standard"
               value={pattern}
               onChange={e => setPattern(e.target.value)}
-              className="flex-1 bg-transparent py-4 outline-none font-mono text-lg text-gray-900"
               placeholder="Enter regex pattern..."
               autoFocus
+              slotProps={{
+                input: {
+                  disableUnderline: true,
+                  sx: { 
+                    fontFamily: 'monospace', 
+                    fontSize: '1.0625rem',
+                    py: 1.2
+                  }
+                }
+              }}
+              sx={{ flex: 1 }}
             />
-            <span className="px-2 text-gray-400 font-mono text-xl select-none">/</span>
-            <input 
-              type="text" 
+            <Typography variant="h5" color="text.secondary" sx={{ fontFamily: 'monospace', select: 'none', mx: 1, fontWeight: 'medium' }}>/</Typography>
+            <TextField
+              variant="standard"
               value={flags}
               onChange={e => setFlags(e.target.value)}
-              className="w-20 bg-transparent py-4 outline-none font-mono text-lg text-blue-600 text-center"
               placeholder="flags"
+              slotProps={{
+                input: {
+                  disableUnderline: true,
+                  sx: { 
+                    fontFamily: 'monospace', 
+                    fontSize: '1.0625rem', 
+                    color: 'primary.main', 
+                    textAlign: 'center',
+                    width: 50,
+                    py: 1.2
+                  }
+                }
+              }}
             />
-          </div>
-          <button 
-            className="px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-lg shadow-md hover:shadow-lg transition-all whitespace-nowrap active:scale-95 flex items-center gap-2"
-          >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            Run Pattern
-          </button>
-        </div>
+          </Box>
+        </Box>
         {parseResult.error && (
-          <div className="mt-3 text-sm text-red-600 font-mono bg-red-50 p-3 rounded-md border border-red-100 flex items-center gap-2">
-            <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            {parseResult.error}
-          </div>
+          <Box sx={{ mt: 1.5, p: 1.5, bgcolor: 'error.50', border: '1px solid', borderColor: 'error.100', borderRadius: 1.5, color: 'error.main', fontFamily: 'monospace', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: 1 }}>
+            <WarningIcon sx={{ fontSize: 18 }} />
+            <Typography variant="body2" sx={{ fontFamily: 'monospace', fontSize: '0.875rem' }}>
+              {parseResult.error}
+            </Typography>
+          </Box>
         )}
-      </div>
+      </Card>
 
       {/* Bottom Split View */}
-      <div className="flex-1 flex flex-col lg:flex-row gap-6 min-h-0">
-        
-        {/* Left: Regex Analyzer */}
-        <div className="w-full lg:w-1/3 bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col overflow-hidden hover:shadow-md transition-shadow">
-          <div className="px-5 py-4 border-b border-gray-200 bg-gray-50/80 shrink-0 flex items-center gap-2">
-            <svg className="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-            </svg>
-            <h3 className="font-bold text-gray-800">AST Analyzer</h3>
-          </div>
-          <div className="flex-1 p-5 overflow-auto font-mono text-sm leading-relaxed bg-white">
+      <Box sx={{ display: 'flex', flex: 1, gap: 2, minHeight: 0, flexDirection: { xs: 'column', lg: 'row' } }}>
+        {/* Left: AST Analyzer */}
+        <Card variant="outlined" sx={{ width: { xs: '100%', lg: '33.33%' }, display: 'flex', flexDirection: 'column', bgcolor: 'white', minHeight: 250 }}>
+          <Box sx={{ p: 1.5, borderBottom: '1px solid', borderColor: 'divider', display: 'flex', alignItems: 'center', gap: 1, bgcolor: 'grey.50' }}>
+            <AnalyticsIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
+            <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>AST Analyzer</Typography>
+          </Box>
+          <Box sx={{ flex: 1, p: 3, overflow: 'auto' }}>
             {parseResult.ast ? renderAstNode(parseResult.ast) : (
-              <div className="flex flex-col items-center justify-center h-full text-gray-400 gap-3">
-                <svg className="w-12 h-12 text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-                </svg>
-                <span className="italic">No valid regex to analyze.</span>
-              </div>
+              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'text.secondary', gap: 1 }}>
+                <Typography variant="body2" sx={{ fontStyle: 'italic', color: 'text.secondary' }}>
+                  No valid regex to analyze.
+                </Typography>
+              </Box>
             )}
-          </div>
-        </div>
+          </Box>
+        </Card>
 
-        {/* Right: Sample Data & Highlight */}
-        <div className="w-full lg:w-2/3 flex flex-col gap-4 min-h-0">
-          <div className="flex-1 bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col overflow-hidden relative hover:shadow-md transition-shadow">
-             <div className="px-5 py-4 border-b border-gray-200 bg-gray-50/80 shrink-0 flex justify-between items-center">
-              <div className="flex items-center gap-2">
-                <svg className="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                <h3 className="font-bold text-gray-800">Test String & Matches</h3>
-              </div>
-              <span className="text-xs font-bold text-blue-700 bg-blue-100 px-3 py-1.5 rounded-full shadow-sm">
-                {matchResult.matches.length} match{matchResult.matches.length !== 1 ? 'es' : ''}
-              </span>
-            </div>
-             <div className="flex-1 flex flex-col divide-y divide-gray-100">
-               {/* Input Textarea */}
-               <div className="flex-1 flex relative">
-                 <textarea 
-                    className="absolute inset-0 w-full h-full resize-none p-5 outline-none text-gray-700 font-mono text-base bg-white focus:bg-gray-50/30 transition-colors"
-                    value={sampleText}
-                    onChange={e => setSampleText(e.target.value)}
-                    placeholder="Enter test string here..."
-                    spellCheck={false}
-                 />
-               </div>
-               
-               {/* Output Highlight Area */}
-               <div className="flex-1 p-5 bg-gray-50 font-mono text-base whitespace-pre-wrap overflow-auto text-gray-600 relative border-b border-gray-100">
-                  <div className="absolute top-0 right-0 p-3">
-                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest bg-white px-2 py-1 rounded shadow-sm border border-gray-100">Preview</span>
-                  </div>
-                  <div className="pt-2">{renderHighlight()}</div>
-               </div>
-               
-               {/* Match Details Area */}
-               <div className="flex-1 p-5 bg-white overflow-auto relative">
-                  <div className="absolute top-0 right-0 p-3">
-                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest bg-gray-50 px-2 py-1 rounded shadow-sm border border-gray-200">Match Details</span>
-                  </div>
-                  <div className="pt-2 space-y-4">
-                    {matchResult.matches.length === 0 ? (
-                      <div className="text-gray-400 text-sm italic">No matches found.</div>
-                    ) : (
-                      matchResult.matches.map((m: any, idx: number) => (
-                        <div key={idx} className="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-                          <div className="bg-blue-50/50 px-4 py-2 border-b border-gray-200 font-mono text-sm text-blue-900">
-                            <span className="font-bold mr-2">Match {idx + 1}:</span>
-                            <span className="bg-white px-1 py-0.5 rounded border border-blue-200">{m.text}</span>
-                          </div>
-                          {(m.groups.length > 0 || m.namedGroups) && (
-                            <div className="p-3 bg-white font-mono text-sm space-y-2">
-                              {m.groups.map((g: any) => (
-                                <div key={g.index} className="flex items-center gap-2">
-                                  <span className="text-xs font-bold bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded">Group {g.index}</span>
-                                  <span className="text-gray-800">{g.value !== undefined ? g.value : <span className="text-gray-400 italic">undefined</span>}</span>
-                                </div>
-                              ))}
-                              {m.namedGroups && Object.entries(m.namedGroups).map(([name, value], i) => (
-                                <div key={`named-${i}`} className="flex items-center gap-2">
-                                  <span className="text-xs font-bold bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded">Name: {name}</span>
-                                  <span className="text-gray-800">{value !== undefined ? String(value) : <span className="text-gray-400 italic">undefined</span>}</span>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      ))
-                    )}
-                  </div>
-               </div>
-             </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  )
+        {/* Right: Test String & Matches */}
+        <Card variant="outlined" sx={{ width: { xs: '100%', lg: '66.66%' }, display: 'flex', flexDirection: 'column', bgcolor: 'white', minHeight: 400 }}>
+          <Box sx={{ p: 1.5, borderBottom: '1px solid', borderColor: 'divider', display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: 'grey.50' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <TextFieldsIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
+              <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>Test String & Matches</Typography>
+            </Box>
+            <Chip 
+              label={`${matchResult.matches.length} match${matchResult.matches.length !== 1 ? 'es' : ''}`} 
+              size="small" 
+              color="primary" 
+              variant="outlined" 
+              sx={{ fontWeight: 'bold' }} 
+            />
+          </Box>
+          
+          <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, overflowY: 'auto' }}>
+            {/* Input Textarea */}
+            <Box sx={{ p: 2, borderBottom: '1px solid', borderColor: 'divider', minHeight: 120, display: 'flex', flexDirection: 'column' }}>
+              <Typography variant="caption" sx={{ fontWeight: 600, color: 'text.secondary', mb: 0.5 }}>Test String</Typography>
+              <TextField
+                multiline
+                fullWidth
+                value={sampleText}
+                onChange={e => setSampleText(e.target.value)}
+                placeholder="Enter test string here..."
+                slotProps={{
+                  htmlInput: { spellCheck: false },
+                  input: { sx: { fontFamily: 'monospace', fontSize: '0.875rem', lineHeight: 1.6 } }
+                }}
+                sx={{
+                  flex: 1,
+                  '& .MuiInputBase-root': {
+                    height: '100%',
+                    alignItems: 'flex-start',
+                    p: 1,
+                  },
+                  '& .MuiOutlinedInput-notchedOutline': { border: 'none' }
+                }}
+              />
+            </Box>
+            
+            {/* Output Highlight Area */}
+            <Box sx={{ p: 2, borderBottom: '1px solid', borderColor: 'divider', bgcolor: 'grey.50', minHeight: 100 }}>
+              <Typography variant="caption" sx={{ fontWeight: 600, color: 'text.secondary', display: 'block', mb: 1 }}>Highlight Preview</Typography>
+              <Box sx={{ 
+                fontFamily: 'monospace', 
+                fontSize: '0.875rem', 
+                whiteSpace: 'pre-wrap', 
+                wordBreak: 'break-all',
+                lineHeight: 1.6,
+                color: 'text.primary'
+              }}>
+                {renderHighlight()}
+              </Box>
+            </Box>
+            
+            {/* Match Details Area */}
+            <Box sx={{ p: 2, flex: 1 }}>
+              <Typography variant="caption" sx={{ fontWeight: 600, color: 'text.secondary', display: 'block', mb: 1.5 }}>Match Details</Typography>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                {matchResult.matches.length === 0 ? (
+                  <Typography variant="body2" sx={{ color: 'text.secondary', fontStyle: 'italic' }}>No matches found.</Typography>
+                ) : (
+                  matchResult.matches.map((m: any, idx: number) => (
+                    <Box key={idx} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2, overflow: 'hidden' }}>
+                      <Box sx={{ bgcolor: 'primary.50', px: 2, py: 1, borderBottom: '1px solid', borderColor: 'divider', display: 'flex', gap: 1, alignItems: 'center' }}>
+                        <Typography variant="caption" sx={{ fontWeight: 'bold', color: 'primary.dark' }}>Match {idx + 1}:</Typography>
+                        <Typography variant="body2" sx={{ fontFamily: 'monospace', bgcolor: 'white', px: 1, py: 0.2, borderRadius: 1, border: '1px solid', borderColor: 'primary.light', fontSize: '0.8125rem' }}>{m.text}</Typography>
+                      </Box>
+                      {(m.groups.length > 0 || m.namedGroups) && (
+                        <Box sx={{ p: 1.5, display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                          {m.groups.map((g: any) => (
+                            <Box key={g.index} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                              <Chip label={`Group ${g.index}`} size="small" variant="filled" sx={{ fontSize: '0.75rem', height: 20 }} />
+                              <Typography variant="body2" sx={{ fontFamily: 'monospace', fontSize: '0.8125rem' }}>{g.value !== undefined ? g.value : <span style={{ color: '#aaa', fontStyle: 'italic' }}>undefined</span>}</Typography>
+                            </Box>
+                          ))}
+                          {m.namedGroups && Object.entries(m.namedGroups).map(([name, value], i) => (
+                            <Box key={`named-${i}`} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                              <Chip label={`Name: ${name}`} size="small" color="secondary" variant="outlined" sx={{ fontSize: '0.75rem', height: 20 }} />
+                              <Typography variant="body2" sx={{ fontFamily: 'monospace', fontSize: '0.8125rem' }}>{value !== undefined ? String(value) : <span style={{ color: '#aaa', fontStyle: 'italic' }}>undefined</span>}</Typography>
+                            </Box>
+                          ))}
+                        </Box>
+                      )}
+                    </Box>
+                  ))
+                )}
+              </Box>
+            </Box>
+          </Box>
+        </Card>
+      </Box>
+    </Box>
+  );
 }

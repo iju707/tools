@@ -5,6 +5,8 @@ import {
   ToggleButtonGroup, ToggleButton 
 } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import SwapVertIcon from '@mui/icons-material/SwapVert';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
@@ -187,13 +189,15 @@ export default function TimeDateTool() {
   };
 
   return (
-    <Box sx={{ p: { xs: 2, md: 3 }, height: '100%', display: 'flex', flexDirection: 'column', maxWidth: 1400, mx: 'auto' }}>
-      <Typography variant="h5" sx={{ mb: 2, fontWeight: 'bold' }}>
-        Time & Date
-      </Typography>
+    <Box sx={{ p: { xs: 2, md: 3 }, height: '100%', display: 'flex', flexDirection: 'column', maxWidth: 1600, mx: 'auto' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+        <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+          Time & Date
+        </Typography>
+      </Box>
 
       {/* World Clocks */}
-      <Box sx={{ mb: 3 }}>
+      <Box sx={{ mb: 2.5 }}>
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
           {WORLD_CLOCKS.map((clock) => (
             <Card variant="outlined" sx={{ bgcolor: 'white', flex: '1 1 180px' }} key={clock.label}>
@@ -206,7 +210,7 @@ export default function TimeDateTool() {
                     {clock.tz === 'UTC' ? 'UTC' : `UTC ${now.tz(clock.tz).format('Z')}`}
                   </Typography>
                 </Box>
-                <Typography variant="h6" sx={{ fontWeight: 'mono', lineHeight: 1 }}>
+                <Typography variant="h6" sx={{ fontWeight: 'bold', fontFamily: 'monospace', lineHeight: 1 }}>
                   {now.tz(clock.tz).format('HH:mm:ss')}
                 </Typography>
                 <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
@@ -218,18 +222,19 @@ export default function TimeDateTool() {
         </Box>
       </Box>
 
-      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 3, flex: 1, minHeight: 0 }}>
+      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', lg: '1fr 1fr' }, gap: 2, flex: 1, minHeight: 0 }}>
         {/* Converter Panel */}
         <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: 0 }}>
-          <Card variant="outlined" sx={{ bgcolor: 'white', flex: 1, overflow: 'auto' }}>
-            <CardContent>
-              <Typography variant="h6" sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
-                Two-way Converter
-              </Typography>
-              
+          <Card variant="outlined" sx={{ bgcolor: 'white', flex: 1, overflow: 'auto', display: 'flex', flexDirection: 'column' }}>
+            <Box sx={{ p: 1.5, borderBottom: '1px solid', borderColor: 'divider', display: 'flex', alignItems: 'center', gap: 1, bgcolor: 'grey.50' }}>
+              <SwapVertIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
+              <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>Two-way Converter</Typography>
+            </Box>
+            
+            <CardContent sx={{ p: 3, flex: 1 }}>
               <Stack spacing={3}>
                 <Box>
-                  <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
+                  <Typography variant="body2" sx={{ mb: 1, fontWeight: 500, color: 'text.secondary' }}>
                     Unix Timestamp
                   </Typography>
                   <Stack direction="row" spacing={1}>
@@ -239,6 +244,9 @@ export default function TimeDateTool() {
                       value={timestampStr}
                       onChange={(e) => handleTimestampChange(e.target.value, timestampType)}
                       placeholder="Enter timestamp..."
+                      slotProps={{
+                        input: { sx: { fontFamily: 'monospace' } }
+                      }}
                     />
                     <Select
                       size="small"
@@ -246,18 +254,18 @@ export default function TimeDateTool() {
                       onChange={(e) => handleTimestampChange(timestampStr, e.target.value as 'ms' | 's')}
                       sx={{ minWidth: 100 }}
                     >
-                      <MenuItem value="ms">Millis</MenuItem>
-                      <MenuItem value="s">Seconds</MenuItem>
+                      <MenuItem value="ms">Millis (ms)</MenuItem>
+                      <MenuItem value="s">Seconds (s)</MenuItem>
                     </Select>
                   </Stack>
                 </Box>
 
                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                  <Chip label="↕ Auto Converts" size="small" variant="outlined" />
+                  <Chip label="↕ Auto Converts" size="small" variant="outlined" color="primary" sx={{ fontWeight: 'medium' }} />
                 </Box>
 
                 <Box>
-                  <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
+                  <Typography variant="body2" sx={{ mb: 1, fontWeight: 500, color: 'text.secondary' }}>
                     Local Date & Time
                   </Typography>
                   <TextField 
@@ -266,23 +274,25 @@ export default function TimeDateTool() {
                     type="datetime-local"
                     value={dateStr}
                     onChange={(e) => handleDateChange(e.target.value)}
-                    slotProps={{ inputLabel: { shrink: true } }}
+                    slotProps={{ 
+                      inputLabel: { shrink: true },
+                      input: { sx: { fontFamily: 'monospace' } }
+                    }}
                   />
                 </Box>
                 
                 {dayjs(dateStr).isValid() && (
-                  <Box sx={{ p: 2, bgcolor: 'grey.50', borderRadius: 1, border: '1px solid', borderColor: 'grey.200' }}>
+                  <Box sx={{ p: 2, bgcolor: 'grey.50', borderRadius: 1.5, border: '1px solid', borderColor: 'grey.200' }}>
                     <Stack spacing={1}>
                       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <Typography variant="body2" color="text.secondary">UTC ISO 8601:</Typography>
-                        <Typography variant="body2" sx={{ fontFamily: 'monospace' }}>
+                        <Typography variant="body2" sx={{ fontFamily: 'monospace', fontWeight: 500 }}>
                           {dayjs(dateStr).utc().format()}
                         </Typography>
                       </Box>
                       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <Typography variant="body2" color="text.secondary">Relative:</Typography>
-                        <Typography variant="body2">
-                          {/* We could use relativeTime plugin here, but keeping it simple for now */}
+                        <Typography variant="body2" sx={{ fontWeight: 500 }}>
                           {dayjs(dateStr).toString()}
                         </Typography>
                       </Box>
@@ -296,34 +306,35 @@ export default function TimeDateTool() {
 
         {/* Format Builder Panel */}
         <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: 0 }}>
-          <Card variant="outlined" sx={{ bgcolor: 'white', flex: 1, overflow: 'auto' }}>
-            <CardContent>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                <Typography variant="h6">
-                  Date Format Builder
-                </Typography>
-                <ToggleButtonGroup
-                  value={formatLanguage}
-                  exclusive
-                  onChange={(_, newValue) => {
-                    if (newValue) {
-                      setFormatLanguage(newValue);
-                      if (newValue === 'python') setFormatStr('%Y-%m-%d %H:%M:%S');
-                      else if (newValue === 'java') setFormatStr('yyyy-MM-dd HH:mm:ss');
-                      else setFormatStr('YYYY-MM-DD HH:mm:ss');
-                    }
-                  }}
-                  size="small"
-                >
-                  <ToggleButton value="js" sx={{ px: 2, py: 0.5 }}>JS (dayjs)</ToggleButton>
-                  <ToggleButton value="python" sx={{ px: 2, py: 0.5 }}>Python</ToggleButton>
-                  <ToggleButton value="java" sx={{ px: 2, py: 0.5 }}>Java/C#</ToggleButton>
-                </ToggleButtonGroup>
+          <Card variant="outlined" sx={{ bgcolor: 'white', flex: 1, overflow: 'auto', display: 'flex', flexDirection: 'column' }}>
+            <Box sx={{ p: 1.5, borderBottom: '1px solid', borderColor: 'divider', display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: 'grey.50' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <CalendarTodayIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
+                <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>Date Format Builder</Typography>
               </Box>
-              
+              <ToggleButtonGroup
+                value={formatLanguage}
+                exclusive
+                onChange={(_, newValue) => {
+                  if (newValue) {
+                    setFormatLanguage(newValue);
+                    if (newValue === 'python') setFormatStr('%Y-%m-%d %H:%M:%S');
+                    else if (newValue === 'java') setFormatStr('yyyy-MM-dd HH:mm:ss');
+                    else setFormatStr('YYYY-MM-DD HH:mm:ss');
+                  }
+                }}
+                size="small"
+              >
+                <ToggleButton value="js" sx={{ px: 2, py: 0.5 }}>JS</ToggleButton>
+                <ToggleButton value="python" sx={{ px: 2, py: 0.5 }}>Python</ToggleButton>
+                <ToggleButton value="java" sx={{ px: 2, py: 0.5 }}>Java/C#</ToggleButton>
+              </ToggleButtonGroup>
+            </Box>
+            
+            <CardContent sx={{ p: 3, flex: 1 }}>
               <Stack spacing={3}>
                 <Box>
-                  <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
+                  <Typography variant="body2" sx={{ mb: 1, fontWeight: 500, color: 'text.secondary' }}>
                     Format String
                   </Typography>
                   <TextField 
@@ -332,20 +343,23 @@ export default function TimeDateTool() {
                     value={formatStr}
                     onChange={(e) => setFormatStr(e.target.value)}
                     placeholder="e.g. YYYY-MM-DD HH:mm:ss"
+                    slotProps={{
+                      input: { sx: { fontFamily: 'monospace' } }
+                    }}
                   />
                 </Box>
 
-                <Box sx={{ p: 3, bgcolor: 'primary.50', borderRadius: 1, border: '1px dashed', borderColor: 'primary.main', textAlign: 'center' }}>
-                  <Typography variant="caption" color="primary.main" sx={{ display: 'block', mb: 1, textTransform: 'uppercase', fontWeight: 'bold' }}>
+                <Box sx={{ p: 3, bgcolor: 'primary.50', borderRadius: 1.5, border: '1px dashed', borderColor: 'primary.main', textAlign: 'center', position: 'relative' }}>
+                  <Typography variant="caption" color="primary.main" sx={{ display: 'block', mb: 1, textTransform: 'uppercase', fontWeight: 'bold', letterSpacing: 0.5 }}>
                     Live Preview (Current Time)
                   </Typography>
-                  <Typography variant="h5" sx={{ fontFamily: 'monospace', color: 'primary.dark' }}>
+                  <Typography variant="h5" sx={{ fontFamily: 'monospace', color: 'primary.dark', fontWeight: 'bold' }}>
                     {now.format(convertFormatToDayjs(formatStr, formatLanguage)) || 'Invalid Format'}
                   </Typography>
                   <IconButton 
                     size="small" 
                     onClick={() => handleCopy(now.format(convertFormatToDayjs(formatStr, formatLanguage)))} 
-                    sx={{ mt: 1 }}
+                    sx={{ mt: 1, color: 'primary.main' }}
                     title="Copy to clipboard"
                   >
                     <ContentCopyIcon fontSize="small" />
