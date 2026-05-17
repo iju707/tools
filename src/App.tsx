@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import { Routes, Route, Link, useLocation, Navigate } from 'react-router-dom'
+import { Routes, Route, Link, useLocation } from 'react-router-dom'
 import RegexTool from './pages/RegexTool'
 import TimeDateTool from './pages/TimeDateTool'
 import ConverterTool from './pages/ConverterTool'
 import EncoderTool from './pages/EncoderTool'
 import ImageEncoderTool from './pages/ImageEncoderTool'
+import Home from './pages/Home'
 
 import { Box, AppBar, Toolbar, IconButton, Typography, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, CssBaseline } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
@@ -59,7 +60,22 @@ function App() {
             <MenuIcon />
           </IconButton>
           
-          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1, fontWeight: 'bold' }}>
+          <Typography 
+            variant="h6" 
+            noWrap 
+            component={Link} 
+            to="/" 
+            sx={{ 
+              flexGrow: 1, 
+              fontWeight: 'bold', 
+              color: 'text.primary', 
+              textDecoration: 'none',
+              transition: 'opacity 0.2s',
+              '&:hover': {
+                opacity: 0.8
+              }
+            }}
+          >
               OOFBIRD Dev Tools
           </Typography>
 
@@ -156,7 +172,7 @@ function App() {
         {/* Dynamic Page Content */}
         <Box sx={{ flex: 1, overflow: 'auto', bgcolor: 'grey.50' }}>
           <Routes>
-            <Route path="/" element={<Navigate to="/regex" replace />} />
+            <Route path="/" element={<Home />} />
             <Route path="/regex" element={<RegexTool />} />
             <Route path="/time" element={<TimeDateTool />} />
             <Route path="/converter" element={<ConverterTool />} />
