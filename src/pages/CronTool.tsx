@@ -1070,63 +1070,61 @@ export default function CronTool() {
       setKoreanExplanation(parseCronToKorean(cronExpression, cronMode))
       setNextExecutions(getNextExecutions(cronExpression, cronMode))
 
-      // Sync back to customFields if in custom tab
-      if (activeTab === 'custom') {
-        const parts = cronExpression.trim().split(/\s+/)
-        let newFields = { ...customFields }
-        if (cronMode === 'standard' && parts.length === 5) {
-          newFields = {
-            seconds: '0',
-            minutes: parts[0],
-            hours: parts[1],
-            dom: parts[2],
-            months: parts[3],
-            dow: parts[4],
-            years: '*'
-          }
-        } else if (cronMode === 'spring' && parts.length === 6) {
-          newFields = {
-            seconds: parts[0],
-            minutes: parts[1],
-            hours: parts[2],
-            dom: parts[3],
-            months: parts[4],
-            dow: parts[5],
-            years: '*'
-          }
-        } else if (cronMode === 'aws' && parts.length === 6) {
-          newFields = {
-            seconds: '0',
-            minutes: parts[0],
-            hours: parts[1],
-            dom: parts[2],
-            months: parts[3],
-            dow: parts[4],
-            years: parts[5]
-          }
-        } else if (cronMode === 'quartz' && parts.length === 7) {
-          newFields = {
-            seconds: parts[0],
-            minutes: parts[1],
-            hours: parts[2],
-            dom: parts[3],
-            months: parts[4],
-            dow: parts[5],
-            years: parts[6]
-          }
+      // Sync back to customFields
+      const parts = cronExpression.trim().split(/\s+/)
+      let newFields = { ...customFields }
+      if (cronMode === 'standard' && parts.length === 5) {
+        newFields = {
+          seconds: '0',
+          minutes: parts[0],
+          hours: parts[1],
+          dom: parts[2],
+          months: parts[3],
+          dow: parts[4],
+          years: '*'
         }
+      } else if (cronMode === 'spring' && parts.length === 6) {
+        newFields = {
+          seconds: parts[0],
+          minutes: parts[1],
+          hours: parts[2],
+          dom: parts[3],
+          months: parts[4],
+          dow: parts[5],
+          years: '*'
+        }
+      } else if (cronMode === 'aws' && parts.length === 6) {
+        newFields = {
+          seconds: '0',
+          minutes: parts[0],
+          hours: parts[1],
+          dom: parts[2],
+          months: parts[3],
+          dow: parts[4],
+          years: parts[5]
+        }
+      } else if (cronMode === 'quartz' && parts.length === 7) {
+        newFields = {
+          seconds: parts[0],
+          minutes: parts[1],
+          hours: parts[2],
+          dom: parts[3],
+          months: parts[4],
+          dow: parts[5],
+          years: parts[6]
+        }
+      }
 
-        if (
-          newFields.seconds !== customFields.seconds ||
-          newFields.minutes !== customFields.minutes ||
-          newFields.hours !== customFields.hours ||
-          newFields.dom !== customFields.dom ||
-          newFields.months !== customFields.months ||
-          newFields.dow !== customFields.dow ||
-          newFields.years !== customFields.years
-        ) {
-          setCustomFields(newFields)
-        }
+      if (
+        newFields.seconds !== customFields.seconds ||
+        newFields.minutes !== customFields.minutes ||
+        newFields.hours !== customFields.hours ||
+        newFields.dom !== customFields.dom ||
+        newFields.months !== customFields.months ||
+        newFields.dow !== customFields.dow ||
+        newFields.years !== customFields.years
+      ) {
+        setCustomFields(newFields)
       }
     } else {
       setKoreanExplanation('')
