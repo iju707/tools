@@ -5,6 +5,7 @@ import TimeDateTool from './pages/TimeDateTool'
 import ConverterTool from './pages/ConverterTool'
 import EncoderTool from './pages/EncoderTool'
 import ImageEncoderTool from './pages/ImageEncoderTool'
+import CronTool from './pages/CronTool'
 import Home from './pages/Home'
 
 import { Box, AppBar, Toolbar, IconButton, Typography, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, CssBaseline } from '@mui/material'
@@ -15,6 +16,7 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime'
 import SyncAltIcon from '@mui/icons-material/SyncAlt'
 import SecurityIcon from '@mui/icons-material/Security'
 import ImageIcon from '@mui/icons-material/Image'
+import AlarmIcon from '@mui/icons-material/Alarm'
 
 const DRAWER_WIDTH = 256;
 const COLLAPSED_WIDTH = 64;
@@ -29,6 +31,7 @@ function App() {
     { name: 'Converter', path: '/converter', icon: <SyncAltIcon /> },
     { name: 'Base64 & Hash', path: '/encoder', icon: <SecurityIcon /> },
     { name: 'Image & Base64', path: '/image-base64', icon: <ImageIcon /> },
+    { name: 'Cron Generator', path: '/cron', icon: <AlarmIcon /> },
   ]
 
   const toggleSidebar = () => {
@@ -178,6 +181,7 @@ function App() {
             <Route path="/converter" element={<ConverterTool />} />
             <Route path="/encoder" element={<EncoderTool />} />
             <Route path="/image-base64" element={<ImageEncoderTool />} />
+            <Route path="/cron" element={<CronTool />} />
           </Routes>
         </Box>
       </Box>

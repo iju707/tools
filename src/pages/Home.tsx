@@ -5,6 +5,7 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime'
 import SyncAltIcon from '@mui/icons-material/SyncAlt'
 import SecurityIcon from '@mui/icons-material/Security'
 import ImageIcon from '@mui/icons-material/Image'
+import AlarmIcon from '@mui/icons-material/Alarm'
 
 interface ToolCard {
   name: string
@@ -56,6 +57,14 @@ export default function Home() {
       icon: <ImageIcon sx={{ fontSize: 32 }} />,
       color: '#ff9800',
       gradient: 'linear-gradient(135deg, #ffb74d 0%, #f57c00 100%)',
+    },
+    {
+      name: 'Cron Generator',
+      description: 'Build and parse cron expressions visually, translate them to natural Korean language, and view upcoming execution timelines.',
+      path: '/cron',
+      icon: <AlarmIcon sx={{ fontSize: 32 }} />,
+      color: '#0072ff',
+      gradient: 'linear-gradient(135deg, #00c6ff 0%, #0072ff 100%)',
     },
   ]
 
