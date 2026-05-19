@@ -801,8 +801,8 @@ function matchPart(val: number, part: string, limit: FieldLimit, dateContext?: D
   return val === exact;
 }
 
-// Predict next 5 executions
-function getNextExecutions(cron: string, mode: CronMode, count = 5): Date[] {
+// Predict next 3 executions
+function getNextExecutions(cron: string, mode: CronMode, count = 3): Date[] {
   const error = validateCron(cron, mode)
   if (error) return []
 
@@ -1068,7 +1068,7 @@ export default function CronTool() {
 
     if (!error) {
       setKoreanExplanation(parseCronToKorean(cronExpression, cronMode))
-      setNextExecutions(getNextExecutions(cronExpression, cronMode))
+      setNextExecutions(getNextExecutions(cronExpression, cronMode, 3))
 
       // Sync back to customFields
       const parts = cronExpression.trim().split(/\s+/)
@@ -1825,7 +1825,7 @@ export default function CronTool() {
                 {!validationError && nextExecutions.length > 0 && (
                   <Box sx={{ mt: 2 }}>
                     <Typography variant="subtitle2" sx={{ fontWeight: 700, color: 'text.secondary', mb: 1.5 }}>
-                      다음 5회 실행 예정 시각:
+                      다음 3회 실행 예정 시각:
                     </Typography>
                     <Stack spacing={1.5}>
                       {nextExecutions.map((date, index) => {
