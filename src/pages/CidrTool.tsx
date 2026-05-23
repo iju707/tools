@@ -205,7 +205,7 @@ const CidrTool: React.FC = () => {
               slotProps={{ htmlInput: { style: { fontFamily: 'monospace', fontSize: '1.1rem' } } }}
             />
 
-            <Typography gutterBottom sx={{ fontWeight: 500, display: 'flex', justifyContent: 'space-between' }}>
+            <Typography component="div" gutterBottom sx={{ fontWeight: 500, display: 'flex', justifyContent: 'space-between' }}>
               <span>CIDR Prefix</span>
               <Chip size="small" color="primary" label={`/${cidr}`} />
             </Typography>

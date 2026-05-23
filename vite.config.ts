@@ -8,4 +8,9 @@ export default defineConfig({
   define: {
     global: 'globalThis',
   },
+  resolve: {
+    alias: {
+      stream: 'stream-browserify',
+    },
+  },
 })
