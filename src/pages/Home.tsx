@@ -7,6 +7,7 @@ import SecurityIcon from '@mui/icons-material/Security'
 import ImageIcon from '@mui/icons-material/Image'
 import AlarmIcon from '@mui/icons-material/Alarm'
 import DifferenceIcon from '@mui/icons-material/Difference'
+import LanIcon from '@mui/icons-material/Lan'
 
 interface ToolCard {
   name: string
@@ -74,6 +75,14 @@ export default function Home() {
       icon: <DifferenceIcon sx={{ fontSize: 32 }} />,
       color: '#2e7d32',
       gradient: 'linear-gradient(135deg, #66bb6a 0%, #2e7d32 100%)',
+    },
+    {
+      name: 'IP Subnet & CIDR Calculator',
+      description: 'Calculate network ranges, broadcast addresses, and visually analyze IPv4 subnets with binary representation and possible subnetting tables.',
+      path: '/cidr',
+      icon: <LanIcon sx={{ fontSize: 32 }} />,
+      color: '#d84315',
+      gradient: 'linear-gradient(135deg, #ff8a65 0%, #d84315 100%)',
     },
   ]
 

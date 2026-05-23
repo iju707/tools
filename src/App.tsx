@@ -8,6 +8,7 @@ import ImageEncoderTool from './pages/ImageEncoderTool'
 import CronTool from './pages/CronTool'
 import Home from './pages/Home'
 import DiffTool from './pages/DiffTool'
+import CidrTool from './pages/CidrTool'
 
 import { Box, AppBar, Toolbar, IconButton, Typography, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, CssBaseline } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
@@ -19,6 +20,7 @@ import SecurityIcon from '@mui/icons-material/Security'
 import ImageIcon from '@mui/icons-material/Image'
 import AlarmIcon from '@mui/icons-material/Alarm'
 import DifferenceIcon from '@mui/icons-material/Difference'
+import LanIcon from '@mui/icons-material/Lan'
 
 const DRAWER_WIDTH = 256;
 const COLLAPSED_WIDTH = 64;
@@ -35,6 +37,7 @@ function App() {
     { name: 'Image & Base64', path: '/image-base64', icon: <ImageIcon /> },
     { name: 'Cron Generator', path: '/cron', icon: <AlarmIcon /> },
     { name: 'Diff Tool', path: '/diff', icon: <DifferenceIcon /> },
+    { name: 'IP / CIDR', path: '/cidr', icon: <LanIcon /> },
   ]
 
   const toggleSidebar = () => {
@@ -186,6 +189,7 @@ function App() {
             <Route path="/image-base64" element={<ImageEncoderTool />} />
             <Route path="/cron" element={<CronTool />} />
             <Route path="/diff" element={<DiffTool />} />
+            <Route path="/cidr" element={<CidrTool />} />
           </Routes>
         </Box>
       </Box>
