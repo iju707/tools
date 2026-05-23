@@ -188,7 +188,6 @@ const CidrTool: React.FC = () => {
             IPv4 Subnet & CIDR Calculator
           </Typography>
         </Box>
-        <Chip label="dev_18" size="small" color="secondary" variant="outlined" />
       </Box>
 
       <Grid container spacing={3}>
