@@ -386,22 +386,15 @@ Enjoy faster development and robust tools every day!`
   }
 
   return (
-    <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1600, mx: 'auto', display: 'flex', flexDirection: 'column', height: 'calc(100vh - 64px)' }}>
+    <Box sx={{ p: { xs: 2, md: 3 }, maxWidth: 1600, mx: 'auto', display: 'flex', flexDirection: 'column', gap: 3, height: 'calc(100vh - 64px)' }}>
       
       {/* Header Section */}
-      <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', mb: 3, gap: 2 }}>
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-          <Box sx={{ bgcolor: 'primary.main', color: 'white', p: 1, borderRadius: 2, display: 'flex', boxShadow: '0 4px 10px rgba(0,114,255,0.2)' }}>
-            <DifferenceIcon />
-          </Box>
-          <Box>
-            <Typography variant="h5" sx={{ fontWeight: 800, color: 'text.primary' }}>
-              JSON Diff & 텍스트 비교 도구
-            </Typography>
-            <Typography variant="caption" color="text.secondary">
-              좌우 텍스트나 JSON의 차이점을 실시간으로 분석하고 세밀하게 하이라이팅합니다.
-            </Typography>
-          </Box>
+          <DifferenceIcon sx={{ color: 'primary.main', fontSize: 32 }} />
+          <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+            JSON Diff & 텍스트 비교 도구
+          </Typography>
         </Box>
         
         {/* Statistics and Quick Options */}

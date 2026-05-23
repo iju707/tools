@@ -192,9 +192,12 @@ export default function ConverterTool() {
   return (
     <Box sx={{ p: { xs: 2, md: 3 }, height: '100%', display: 'flex', flexDirection: 'column', maxWidth: 1600, mx: 'auto' }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-        <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
-          Data Converter
-        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+          <SyncAltIcon sx={{ color: 'primary.main', fontSize: 32 }} />
+          <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+            Data Converter
+          </Typography>
+        </Box>
         
         <Stack direction="row" spacing={1}>
           <Tooltip title="Format / Beautify">

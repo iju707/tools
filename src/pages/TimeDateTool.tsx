@@ -7,6 +7,7 @@ import {
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
@@ -191,9 +192,12 @@ export default function TimeDateTool() {
   return (
     <Box sx={{ p: { xs: 2, md: 3 }, height: '100%', display: 'flex', flexDirection: 'column', maxWidth: 1600, mx: 'auto' }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-        <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
-          Time & Date
-        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+          <AccessTimeIcon sx={{ color: 'primary.main', fontSize: 32 }} />
+          <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+            Time & Date
+          </Typography>
+        </Box>
       </Box>
 
       {/* World Clocks */}

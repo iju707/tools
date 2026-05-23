@@ -8,6 +8,7 @@ import {
 import WarningIcon from '@mui/icons-material/Warning';
 import AnalyticsIcon from '@mui/icons-material/Analytics';
 import TextFieldsIcon from '@mui/icons-material/TextFields';
+import FindInPageIcon from '@mui/icons-material/FindInPage';
 
 export default function RegexTool() {
   const [pattern, setPattern] = useState('[0-9]+');
@@ -229,9 +230,12 @@ export default function RegexTool() {
   return (
     <Box sx={{ p: { xs: 2, md: 3 }, height: '100%', display: 'flex', flexDirection: 'column', maxWidth: 1600, mx: 'auto' }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-        <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
-          Regex Tester
-        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+          <FindInPageIcon sx={{ color: 'primary.main', fontSize: 32 }} />
+          <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+            Regex Tester
+          </Typography>
+        </Box>
       </Box>
 
       {/* Top Input Area */}

@@ -16,6 +16,7 @@ import {
   Alert,
 } from '@mui/material';
 import ipaddr from 'ipaddr.js';
+import LanIcon from '@mui/icons-material/Lan';
 
 // --- Utils ---
 
@@ -179,11 +180,14 @@ const CidrTool: React.FC = () => {
   };
 
   return (
-    <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1200, mx: 'auto' }}>
-      <Box sx={{ mb: 4, display: 'flex', alignItems: 'center', gap: 2 }}>
-        <Typography variant="h4" sx={{ fontWeight: 800, background: 'linear-gradient(90deg, #3b82f6, #8b5cf6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-          IPv4 Subnet & CIDR Calculator
-        </Typography>
+    <Box sx={{ p: { xs: 2, md: 3 }, maxWidth: 1600, mx: 'auto', display: 'flex', flexDirection: 'column', gap: 3 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+          <LanIcon sx={{ color: 'primary.main', fontSize: 32 }} />
+          <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+            IPv4 Subnet & CIDR Calculator
+          </Typography>
+        </Box>
         <Chip label="dev_18" size="small" color="secondary" variant="outlined" />
       </Box>
 
