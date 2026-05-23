@@ -6,6 +6,7 @@ import SyncAltIcon from '@mui/icons-material/SyncAlt'
 import SecurityIcon from '@mui/icons-material/Security'
 import ImageIcon from '@mui/icons-material/Image'
 import AlarmIcon from '@mui/icons-material/Alarm'
+import DifferenceIcon from '@mui/icons-material/Difference'
 
 interface ToolCard {
   name: string
@@ -65,6 +66,14 @@ export default function Home() {
       icon: <AlarmIcon sx={{ fontSize: 32 }} />,
       color: '#0072ff',
       gradient: 'linear-gradient(135deg, #00c6ff 0%, #0072ff 100%)',
+    },
+    {
+      name: 'JSON Diff & Text Compare',
+      description: 'Analyze and visually highlight the differences between two texts or JSON structures in real-time with synchronized scrolling.',
+      path: '/diff',
+      icon: <DifferenceIcon sx={{ fontSize: 32 }} />,
+      color: '#2e7d32',
+      gradient: 'linear-gradient(135deg, #66bb6a 0%, #2e7d32 100%)',
     },
   ]
 

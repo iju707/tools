@@ -7,6 +7,7 @@ import EncoderTool from './pages/EncoderTool'
 import ImageEncoderTool from './pages/ImageEncoderTool'
 import CronTool from './pages/CronTool'
 import Home from './pages/Home'
+import DiffTool from './pages/DiffTool'
 
 import { Box, AppBar, Toolbar, IconButton, Typography, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, CssBaseline } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
@@ -17,6 +18,7 @@ import SyncAltIcon from '@mui/icons-material/SyncAlt'
 import SecurityIcon from '@mui/icons-material/Security'
 import ImageIcon from '@mui/icons-material/Image'
 import AlarmIcon from '@mui/icons-material/Alarm'
+import DifferenceIcon from '@mui/icons-material/Difference'
 
 const DRAWER_WIDTH = 256;
 const COLLAPSED_WIDTH = 64;
@@ -32,6 +34,7 @@ function App() {
     { name: 'Base64 & Hash', path: '/encoder', icon: <SecurityIcon /> },
     { name: 'Image & Base64', path: '/image-base64', icon: <ImageIcon /> },
     { name: 'Cron Generator', path: '/cron', icon: <AlarmIcon /> },
+    { name: 'Diff Tool', path: '/diff', icon: <DifferenceIcon /> },
   ]
 
   const toggleSidebar = () => {
@@ -182,6 +185,7 @@ function App() {
             <Route path="/encoder" element={<EncoderTool />} />
             <Route path="/image-base64" element={<ImageEncoderTool />} />
             <Route path="/cron" element={<CronTool />} />
+            <Route path="/diff" element={<DiffTool />} />
           </Routes>
         </Box>
       </Box>
